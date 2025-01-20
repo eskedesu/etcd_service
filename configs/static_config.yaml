@@ -58,3 +58,5 @@ components_manager:
         etcd:
             endpoints:
               - http://localhost:2379
+            retries: 2
+            request_timeout_ms: 500

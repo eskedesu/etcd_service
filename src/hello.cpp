@@ -15,21 +15,22 @@ class Hello final : public userver::server::handlers::HttpHandlerBase {
   Hello(const userver::components::ComponentConfig& config,
         const userver::components::ComponentContext& component_context)
       : HttpHandlerBase(config, component_context),
-        etcd_client_v2_ptr_(
+        etcd_client_ptr_(
             component_context
                 .FindComponent<userver::storages::etcd::Component>("etcd")
-                .GetClientV2()) {}
+                .GetClient()) {}
 
   std::string HandleRequestThrow(
       const userver::server::http::HttpRequest& request,
       userver::server::request::RequestContext&) const override {
-    etcd_client_v2_ptr_->Put("key", "value");
-    etcd_client_v2_ptr_->Range("key");
+    etcd_client_ptr_->Put("key", "value");
+    etcd_client_ptr_->Range("key");
+    etcd_client_ptr_->DeleteRange("key");
     return service_template::SayHelloTo(request.GetArg("name"));
   }
 
  private:
-  userver::storages::etcd::ClientV2Ptr etcd_client_v2_ptr_;
+  userver::storages::etcd::ClientPtr etcd_client_ptr_;
 };
 
 }  // namespace
